@@ -295,7 +295,7 @@ public class Scraper {
 		System.out.println(odds.size() + " odds ");
 
 		ArrayList<ExtendedFixture> list = new ArrayList<>();
-		controlList(list,competition, collectYear);
+		controlList(list,competition, collectYear, oldestTocheck);
 		/**
 		int count = 0;
 		int maxTries = 1;
@@ -353,7 +353,7 @@ public class Scraper {
 
 		ArrayList<ExtendedFixture> withNext = new ArrayList<>();
 
-		controlSecondDoubleFor(toAdd, next);
+		controlSecondDoubleFor(toAdd, next, withNext);
 		/**
 		for (ExtendedFixture i : toAdd) {
 			boolean continueFlag = false;
@@ -408,7 +408,7 @@ public class Scraper {
 				maxPage = Integer.parseInt(i.getText().trim());
 		}
 
-		controlOddsUpToDate(driver, address, competition, yesterday, result);
+		controlOddsUpToDate(driver, address, competition, yesterday, result, maxPage);
 		/**
 		boolean breakFlag = false;
 		try {

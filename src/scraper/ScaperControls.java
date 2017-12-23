@@ -35,7 +35,8 @@ class ScaperControls {
 		return new Actions(driver);	
 	}
 	
-	private static void controlCollectUpToDate(WebDriver driver, Set<ExtendedFixture> set, Date yesterday) {
+	private static void controlCollectUpToDate(WebDriver driver, Set<ExtendedFixture> set,
+			Date yesterday, ArrayList<ExtendedFixture> result) {
 		while (true) {
 			int setSize = set.size();
 			String html = driver.getPageSource();
@@ -64,6 +65,15 @@ class ScaperControls {
 
 			if (breakFlag)
 				break;
+		}
+		
+		Actions actions = createAction(driver);
+		actions.moveToElement(driver.findElement(By.className("previous"))).click().perform();
+		Thread.sleep(1000);
+		String htmlAfter = driver.getPageSource();
+
+		if (html.equals(htmlAfter))
+			break;
 	}
 	
 	static ArrayList<ExtendedFixture> collectUpToDate(String competition, int currentYear, Date yesterday,
@@ -90,7 +100,7 @@ class ScaperControls {
 		// System.out.println("Problem closing efbet add");
 		// }
 
-		controlCollectUpToDate(driver, set, yesterday, );
+		controlCollectUpToDate(driver, set, yesterday, result);
 		/**
 		while (true) {
 			int setSize = set.size();
@@ -120,8 +130,6 @@ class ScaperControls {
 
 			if (breakFlag)
 				break;
-				
-			*/
 
 			Actions actions = createAction(driver);
 			actions.moveToElement(driver.findElement(By.className("previous"))).click().perform();
@@ -130,12 +138,11 @@ class ScaperControls {
 
 			if (html.equals(htmlAfter))
 				break;
+				*/
 
 			// Additional stopping condition - no new entries
 			// if (set.size() == setSize)
 			// break;
-
-		}
 
 		driver.close();
 
@@ -148,7 +155,8 @@ class ScaperControls {
 		return setlist;
 	}
 
-	static void controlList(ArrayList<ExtendedFixture> list, String competition, int collectYear){
+	static void controlList(ArrayList<ExtendedFixture> list, String competition,
+			int collectYear, Date oldestTocheck){
 		int count = 0;
 		int maxTries = 1;
 		try {
@@ -164,6 +172,7 @@ class ScaperControls {
 
 	static void controlFirstDoubleFor(ArrayList<ExtendedFixture> all, 
 			ArrayList<ExtendedFixture> combined, ArrayList<ExtendedFixture> toAdd) {
+		
 		for (ExtendedFixture i : all) {
 			boolean continueFlag = false;
 			for (ExtendedFixture comb : combined) {
@@ -177,7 +186,8 @@ class ScaperControls {
 		}
 	}
 	
-	static void controlSecondDoubleFor(ArrayList<ExtendedFixture> toAdd, ArrayList<ExtendedFixture> next) {
+	static void controlSecondDoubleFor(ArrayList<ExtendedFixture> toAdd, ArrayList<ExtendedFixture> next,
+			ArrayList<ExtendedFixture> withNext) {
 		for (ExtendedFixture i : toAdd) {
 			boolean continueFlag = false;
 			for (ExtendedFixture n : next) {
@@ -196,8 +206,8 @@ class ScaperControls {
 		return new ArrayList<String>();
 	}	
 
-	static controlOddsUpToDate(WebDriver driver, String address, String competition, 
-			Date yesterday, Set<ExtendedFixture> result) {
+	static void controlOddsUpToDate(WebDriver driver, String address, String competition, 
+			Date yesterday, Set<ExtendedFixture> result, int maxPage) {
 		boolean breakFlag = false;
 		try {
 			for (int page = 1; page <= maxPage; page++) {
