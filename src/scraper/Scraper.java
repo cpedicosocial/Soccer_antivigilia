@@ -1379,7 +1379,7 @@ public class Scraper {
 		System.out.println("Final odds size " + result.size());
 		return result;
 	}
-
+	
 	public static ArrayList<ExtendedFixture> fastOdds(String competition, int year, String add)
 			throws IOException, ParseException, InterruptedException {
 
@@ -1402,10 +1402,12 @@ public class Scraper {
 		// Get page count
 		int maxPage = 1;
 		List<WebElement> pages = driver.findElements(By.cssSelector("a[href*='#/page/']"));
-		for (WebElement i : pages) {
+		
+		ScraperControls.controlPages(pages, maxPage);
+		/**for (WebElement i : pages) {
 			if (isNumeric(i.getText()) && Integer.parseInt(i.getText().trim()) > maxPage)
 				maxPage = Integer.parseInt(i.getText().trim());
-		}
+		}*/
 
 		try {
 			 for (int page = 1; page <= maxPage; page++) {
@@ -1415,21 +1417,23 @@ public class Scraper {
 				String leagueYear = splitAddress[splitAddress.length - 1];
 				List<WebElement> list = driver.findElements(By.cssSelector("a[href*='" + leagueYear + "']"));
 				ArrayList<String> links = createArrayListString();
-				for (WebElement i : list) {
+				ScraperControls.controlListLinks(list, links);
+				/**for (WebElement i : list) {
 					// better logic here?
 					if (i.getText().contains("-") && isFixtureLink(i.getAttribute("href")))
 						links.add(i.getAttribute("href"));
-				}
+				}*/
 
 				System.out.println(links);
-				for (String i : links) {
+				ScraperControls.controlLinks(links, driver, competition, result);
+				/**for (String i : links) {
 					ExtendedFixture ef = getFastOddsFixture(driver, i, competition);
 					if (ef != null)
 						result.add(ef);
 
 					break;
 
-				}
+				}*/
 			} 
 		} catch (Exception e) {
 				System.out.println("Something was wrong");
@@ -1449,24 +1453,6 @@ public class Scraper {
 		fin.addAll(result);
 		System.out.println(fin.size());
 		return fin;
-	}
-
-	private static boolean isFixtureLink(String attribute) {
-		// TODO Auto-generated method stub
-
-		// http://www.oddsportal.com/soccer/japan/j-league-2015/hiroshima-g-osaka-EufnwCdk/
-		String[] split = attribute.split("/");
-		String fixturePart = split[split.length - 1];
-		String[] split2 = fixturePart.split("-");
-		if (split2.length < 3)
-			return false;
-		else {
-			if (split2[split2.length - 1].length() == 8)
-				return true;
-			else
-				return false;
-		}
-
 	}
 
 	/**
