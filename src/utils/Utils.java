@@ -958,44 +958,27 @@ public class Utils {
 				+ (testCount - failtimes - losses) + " with AVG: " + total / (testCount - failtimes));
 	}
 
-	public static void hyperReal(ArrayList<FinalEntry> all, int year, float bankroll, float percent) {
+	public static void hyperReal(ArrayList<FinalEntry> all, int year, float bankroll, float percent) 
+	{
 		System.err.println(year);
 		float bank = bankroll;
 		float previous = bank;
 		int succ = 0;
 		int alls = 0;
 		all.sort(new Comparator<FinalEntry>() {
-
 			@Override
 			public int compare(FinalEntry o1, FinalEntry o2) {
 				return o1.fixture.date.compareTo(o2.fixture.date);
 			}
-
 		});
-
 		float betSize = percent * bankroll;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(all.get(0).fixture.date);
 		int month = cal.get(Calendar.MONTH);
 		for (FinalEntry i : all) {
 			cal.setTime(i.fixture.date);
-			if (cal.get(Calendar.MONTH) == month) {
-				float gain = i.prediction >= i.upper ? i.fixture.maxOver : i.fixture.maxUnder;
-				bank += betSize * (i.success() ? (gain - 1f) : -1f);
-				succ += i.success() ? 1 : 0;
-				alls++;
-			}else {
-				System.out.println("Bank after month: " + (month + 1) + " is: " + bank + " unit: " + betSize
-						+ " profit: " + (bank - previous) + " in units: " + (bank - previous) / betSize + " rate: "
-						+ (float) succ / alls + "%");
-				previous = bank;
-				betSize = bank * percent;
-				month = cal.get(Calendar.MONTH);
-				float gain = i.prediction >= i.upper ? i.fixture.maxOver : i.fixture.maxUnder;
-				bank += betSize * (i.success() ? (gain - 1f) : -1f);
-				alls = 1;
-				succ = i.success() ? 1 : 0;
-			}
+			bank=UtilsControls.controlMonth(cal,month,bank,betSize,i,succ,alls);
+			bank=UtilsControls.controlNotMonth(cal,month,bank,betSize,i,succ,alls,previous,percent);
 		}
 		System.out.println("Bank after month: " + (month + 1) + " is: " + bank + " unit: " + betSize + " profit: "
 				+ (bank - previous) + " in units: " + (bank - previous) / betSize + " rate: " + (float) succ / alls
@@ -1882,7 +1865,8 @@ public class Utils {
 	}
 
 	public static float evaluatePlayers(ExtendedFixture ef, ArrayList<PlayerFixture> pfs,
-			HashMap<String, String> dictionary, ArrayList<ExtendedFixture> all) throws ParseException {
+			HashMap<String, String> dictionary, ArrayList<ExtendedFixture> all) throws ParseException 
+	{
 		// The shots data from soccerway(opta) does not add the goals as shots,
 		// must be added for more accurate predictions and equivalancy with
 		// alleurodata
@@ -1915,21 +1899,11 @@ public class Utils {
 		float dist = avgShotsOver - avgShotsUnder;
 		// System.out.println(dist);
 
-		if (avgShotsUnder > avgShotsOver) {
-			return 0.5f;
-		}
-		if (expected >= avgShotsOver && expected > avgShotsUnder) {
-			float score = 0.5f + 0.5f * (expected - avgShotsOver) / dist;
-			return (score >= 0 && score <= 1f) ? score : 1f;
-		}
-		if ((expected >= avgShotsOver && expected > avgShotsUnder) && expected <= avgShotsUnder && expected < avgShotsOver) {
-			float score = 0.5f - 0.5f * (-expected + avgShotsUnder) / dist;
-			return (score >= 0 && score <= 1f) ? score : 0f;
-		} else {
-			// System.out.println(f);
-			return 0.5f;
-		}
-
+		float returned=0f;
+		returned=UtilsControls.controlAvg(avgShotsUnder,avgShotsOver);
+		returned=UtilsControls.controlExpectedGreater(expected,avgShotsUnder,avgShotsOver,dist);
+		returned=UtilsControls.controlExpectedSmaller(expected,avgShotsUnder,avgShotsOver,dist);
+		return returned;
 		// System.out.println(homeEstimate + " : " + awayEstimate);
 		// return /* Utils.poissonOver(homeEstimate, awayEstimate)
 		// */totalEstimate / 2;
@@ -2175,32 +2149,18 @@ public class Utils {
 	 * @param dataType
 	 * @throws InterruptedException
 	 */
-	public static void optimalHTSettings(int newStart, int newEnd, DataType dataType, MaximizingBy NewMaxBy)
-			throws InterruptedException {
+	public static void optimalHTSettings(int newStart, int newEnd, DataType dataType, MaximizingBy newMaxBy)
+			throws InterruptedException 
+	{
 		ArrayList<HTEntry> all = new ArrayList<>();
-
 		for (int i = newStart; i <= newEnd; i++) {
 			ArrayList<HTEntry> finals = createHTEntry();
 			for (String comp : Arrays.asList(MinMaxOdds.SHOTS)) {
 				finals.addAll(SQLiteJDBC.selectHTData(comp, i, "ht"));
 			}
-
-			// HashMap<String, ArrayList<FinalEntry>> byLeague =
-			// Utils.byLeague(finals);
-			// for (java.util.Map.Entry<String, ArrayList<FinalEntry>> league :
-			// byLeague.entrySet()) {
-			// if (!byLeagueYear.containsKey(league.getKey()))
-			// byLeagueYear.put(league.getKey(), new HashMap<>());
-			//
-			// byLeagueYear.get(league.getKey()).put(i, league.getValue());
-
-			// }
-
 			all.addAll(finals);
 		}
-
 		float step = 0.1f;
-
 		float bestProfit = Float.NEGATIVE_INFINITY;
 		float bestWinRatio = 0f;
 		String bestDescription = null;
@@ -2208,7 +2168,6 @@ public class Utils {
 		bestx = besty = bestz = bestw = 0f;
 		float bestTH = 0.3f;
 		float bestEval = 1f;
-
 		for (int i = 0; i <= 0; i++) {
 			float currentTH = 0.22f + i * 0.01f;
 			System.out.println(currentTH);
@@ -2217,66 +2176,13 @@ public class Utils {
 				hte.fe.lower = currentTH;
 				hte.fe.upper = currentTH;
 			}
-
 			int xmax = (int) (1f / step);
 			for (int x = 0; x <= xmax; x++) {
 				int ymax = xmax - x;
 				for (int y = 0; y <= ymax; y++) {
-					int zmax = ymax - y;
-					for (int z = 0; z <= zmax; z++) {
-						int w = zmax - z;
-						System.out.println(x * step + " " + y * step + " " + z * step + " " + w * step);
-
-						for (HTEntry hte : all) {
-							hte.fe.prediction = x * step * hte.zero + y * step * hte.one + z * step * hte.two
-									+ w * step * hte.more;
-						}
-
-						float currentProfit, currentWinRate = 0f;
-						float currEval = 1f;
-						if (newMaxBy.equals(MaximizingBy.BOTH) && all.size() >= 100) {
-							currentProfit = getProfitHT(all);
-							currEval = evaluateRecord(getFinals(all));
-							// currentWinRate = getSuccessRate(getFinals(all));
-						}
-						if (!newMaxBy.equals(MaximizingBy.BOTH) && newMaxBy.equals(MaximizingBy.UNDERS) && onlyUnders(getFinals(all)).size() >= 100) {
-							currentProfit = getProfitHT(onlyUndersHT(all));
-							currEval = evaluateRecord(onlyUnders(getFinals(all)));
-							// currentWinRate
-							// =getSuccessRate(onlyUnders(getFinals(all)));
-						}
-						if (newMaxBy.equals(MaximizingBy.OVERS) && onlyOvers(getFinals(all)).size() >= 100) {
-							currentProfit = getProfitHT(onlyOversHT(all));
-							currEval = evaluateRecord(onlyOvers(getFinals(all)));
-							// currentWinRate
-							// =getSuccessRate(onlyOvers(getFinals(all)));
-						} else {
-							currentProfit = Float.NEGATIVE_INFINITY;
-						}
-
-						System.out.println(currentProfit);
-						System.out.println("1 in " + currEval);
-
-						if (/* currentProfit > bestProfit */ currEval > bestEval/*
-																				 * currentWinRate
-																				 * >
-																				 * bestWinRatio
-																				 */) {
-							bestProfit = currentProfit;
-							bestEval = currEval;
-							bestWinRatio = currentWinRate;
-							bestx = step * x;
-							besty = step * y;
-							bestz = step * z;
-							bestw = step * w;
-							bestTH = currentTH;
-							bestDescription = x * step + "*zero + " + y * step + "*one + " + z * step + " *two+ "
-									+ w * step + " *>=3";
-							// System.out.println(bestProfit);
-							// System.out.println("1 in " + bestEval);
-						}
-
-					}
+					float currEval = 1f;
+					currEval=UtilsControls.controlLoop(x,y,step,all,ymax,newMaxBy,currentTH,
+							bestx,besty,bestz,bestw,bestTH,bestEval,bestDescription,bestProfit,bestWinRatio);
 				}
 			}
 		}
@@ -2287,12 +2193,7 @@ public class Utils {
 			hte.fe.lower = bestTH;
 			hte.fe.upper = bestTH;
 		}
-
-		if (newMaxBy.equals(MaximizingBy.UNDERS))
-			all = onlyUndersHT(all);
-		if (!newMaxBy.equals(MaximizingBy.UNDERS) && newMaxBy.equals(MaximizingBy.OVERS))
-			all = onlyOversHT(all);
-
+		all=UtilsControls.controlNewMaxBy5(newMaxBy,all); 
 		System.out.println(bestProfit);
 		System.out.println(bestTH);
 		System.out.println("1 in " + bestEval);
@@ -2332,45 +2233,15 @@ public class Utils {
 			float currentProfit, currentWinRate = 0f;
 			float currEval = 1f;
 			
-			if (newMaxBy.equals(MaximizingBy.BOTH) && all.size() >= 100) {
-				currentProfit = getProfitHT(all);
-				currEval = evaluateRecord(getFinals(all));
-				// currentWinRate = getSuccessRate(getFinals(all));
-			}
-			if (newMaxBy.equals(MaximizingBy.UNDERS) && onlyUnders(getFinals(all)).size() >= 100) {
-				currentProfit = getProfitHT(onlyUndersHT(all));
-				currEval = evaluateRecord(onlyUnders(getFinals(all)));
-				// currentWinRate
-				// =getSuccessRate(onlyUnders(getFinals(all)));
-
-			}
-			if (newMaxBy.equals(MaximizingBy.OVERS) && onlyOvers(getFinals(all)).size() >= 100) {
-				currentProfit = getProfitHT(onlyOversHT(all));
-				currEval = evaluateRecord(onlyOvers(getFinals(all)));
-				// currentWinRate
-				// =getSuccessRate(onlyOvers(getFinals(all)));
-			} else {
-				currentProfit = Float.NEGATIVE_INFINITY;
-			}
-
+			currEval=UtilsControls.controlNewMaxByAll(newMaxBy,all,currentProfit,currEval);
+			currEval=UtilsControls.controlNewMaxByUnders(newMaxBy,all,currentProfit,currEval);
+			currEval=UtilsControls.controlNewMaxByOvers(newMaxBy,all,currentProfit,currEval);
+			
 			System.out.println(x * step + " " + y * step);
 			System.out.println(currentProfit);
 			System.out.println("1 in " + currEval);
 
-			if (/* currentProfit > bestProfit */ currEval > bestEval/*
-																	 * currentWinRate
-																	 * >
-																	 * bestWinRatio
-																	 */) {
-				bestProfit = currentProfit;
-				bestEval = currEval;
-				bestx = step * x;
-				besty = step * y;
-				bestDescription = x * step + "*zero + " + y * step + "*one + ";
-				// System.out.println(bestProfit);
-				// System.out.println("1 in " + bestEval);
-
-			}
+			bestDescription=UtilsControls.controlNewMaxByFinal(currEval,bestEval,currentProfit,bestProfit,step,bestx,x,besty,y,bestDescription);
 		}
 
 		for (HTEntry hte : all) {
@@ -2380,11 +2251,7 @@ public class Utils {
 			// hte.fe.upper = bestTH;
 		}
 
-		if (newMaxBy.equals(MaximizingBy.UNDERS))
-			all = onlyUndersHT(all);
-		if (!newMaxBy.equals(MaximizingBy.UNDERS) && newMaxBy.equals(MaximizingBy.OVERS))
-			all = onlyOversHT(all);
-
+		all=UtilsControls.controlNewMaxByEquals(newMaxBy,all);
 		System.out.println(bestProfit);
 		System.out.println(bestTH);
 		System.out.println("1 in " + bestEval);
@@ -2412,3 +2279,4 @@ public class Utils {
 	}
 
 }
+
