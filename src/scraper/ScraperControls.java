@@ -166,7 +166,6 @@ class ScraperControls {
 				break;
 			}
 		}
-		// Utils.printPlayers(playerFixtures);
 
 		if (!updated)
 			System.err.println("Problem in updating " + (goals ? "goals " : "assists ") + "for " + name);
@@ -237,7 +236,6 @@ class ScraperControls {
 			String href = i.getAttribute("href");
 			if (i.getText().contains("-") && isFixtureLink(href)) {
 				links.add(href);
-	
 			}
 		}
 	}
@@ -284,19 +282,7 @@ class ScraperControls {
 		if (verbose)
 			System.out.println(s);
 	}
-	
-	private static void controlIfResElement(WebElement resElement, String resString, Result fullResult,
-			Result htResult, String away, String home) {
-		if (resElement != null && (resString.contains("awarded") && resString.contains(home))) {
-			fullResult = new Result(3, 0);
-			htResult = new Result(3, 0);
-		}
-		if (resElement != null && (resString.contains("awarded") && resString.contains(away))) {
-			fullResult = new Result(0, 3);
-			htResult = new Result(0, 3);
-		}
-	}
-	
+
 	private static void controlIfElseResElement(WebElement resElement, String resString, Result fullResult, Result htResult){
 		if (resElement != null && (resString.contains("(") && resString.contains(")"))) {
 			String full = resString.split(" ")[2];
@@ -327,19 +313,6 @@ class ScraperControls {
 			opt = div;
 		}
 	}
-
-	private static void controlIfRowAsianOverPinnacle(WebElement row, String rowText){
-		if (row.getText().contains("Average"))
-			break;
-		String[] oddsArray = rowText.split("\n");
-		// System.out.println(rowText);
-		if (oddsArray.length != 5)
-			continue;
-		
-
-		if (Arrays.asList(MinMaxOdds.FAKEBOOKS).contains(bookmaker) || bookmaker.isEmpty())
-			continue;
-	}
 	
 	static void controlRowAsianOverPinnacle(List<WebElement> rowsGoals, float line, float x, float y, ArrayList<Odds> matchOdds, Odds pinnOdds){
 		for (WebElement row : rowsGoals) {
@@ -357,7 +330,6 @@ class ScraperControls {
 	
 			if (bookmaker.equals("Pinnacle"))
 				pinnOdds = modds;
-	
 		}
 	}
 
@@ -440,7 +412,6 @@ class ScraperControls {
 		}
 	}
 	
-	
-	
+		
 }//di classe
 

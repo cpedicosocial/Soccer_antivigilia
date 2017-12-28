@@ -120,7 +120,7 @@ public class Utils_3 {
 
 	}
 
-	public static Object getTommorow(Date date) {
+	public static Date getTommorow(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.add(Calendar.DAY_OF_YEAR, 1);

@@ -164,30 +164,6 @@ public class Utils_2 {
 	public static void fullAnalysys(ArrayList<FinalEntry> all, String description) {
 		analysys(all, description, true);
 
-		// Settings initial = new Settings("", 0f, 0f, 0f, 0.55f, 0.55f, 0.55f,
-		// 0.5f, 0f).withShots(1f);
-		//
-		// initial = XlSUtils.findValueByEvaluation(all, initial);
-		// System.out.println("=======================================================================");
-		// System.out.println("Optimal value is " + initial.value);
-		// ArrayList<FinalEntry> values = XlSUtils.restrict(all, initial);
-		// analysys(values, year);
-		//
-		// initial = XlSUtils.findThreshold(all, initial, MaximizingBy.UNDERS);
-		// ArrayList<FinalEntry> withTH = XlSUtils.restrict(all, initial);
-		// System.out.println("=======================================================================");
-		// System.out.println("Optimal th is " + initial.threshold);
-		// analysys(onlyUnders(withTH), year, true);
-		// LineChart.draw(Utils.createProfitMovementData(onlyUnders(withTH)),
-		// 3000);
-		//
-		// initial = XlSUtils.findValueByEvaluation(withTH, initial);
-		// System.out.println("=======================================================================");
-		// System.out.println("Optimal value is " + initial.value + " for found
-		// optimal threshold=" + initial.threshold);
-		// ArrayList<FinalEntry> values2 = XlSUtils.restrict(withTH, initial);
-		// analysys(values2, year);
-
 	}
 
 	public static void analysys(ArrayList<FinalEntry> all, String description, boolean verbose) {
@@ -214,17 +190,6 @@ public class Utils_2 {
 			System.out.println(thresholdsByLeague(all));
 			LineChart.draw(Utils.createProfitMovementData(Utils.noequilibriums(all)), description);
 		}
-		// Settings initial = new Settings("", 0f, 0f, 0f, 0.55f, 0.55f, 0.55f,
-		// 0.5f, 0f).withShots(1f);
-
-		// initial = XlSUtils.findThreshold(all, initial);
-		// System.out.println("Optimal th is " + initial.threshold);
-		// printStats(all, "all");
-
-		// initial = XlSUtils.findValueByEvaluation(all, initial);
-		// System.out.println("Optimal value is " + initial.value);
-		// all = XlSUtils.restrict(all, initial);
-		// printStats(all, "all");
 
 		ArrayList<FinalEntry> overs = Utils.onlyOvers(noEquilibriums);
 		ArrayList<FinalEntry> unders = Utils.onlyUnders(noEquilibriums);
@@ -320,7 +285,6 @@ public class Utils_2 {
 	}
 
 	
-
 	public static String format(float d) {
 		return String.format("%.2f", d);
 	}
@@ -346,9 +310,6 @@ public class Utils_2 {
 				yes = yesControls(all,i,yes);
 			}
 
-			// System.out.println(
-			// flag ? "bankrupt" : "bankroll: " + bankroll + " successrate: " +
-			// (float) yes / (all.size() / 3));
 			failtimes = failtimesControls(flag,failtimes);
 			total = totalControls(flag,total,bankroll);
 			losses = flagBankrollControls(flag,total,bankroll,losses);
@@ -453,7 +414,6 @@ public class Utils_2 {
 				if (avgRate >= 0.4)
 					result.add(i);
 			}
-
 		}
 		return result;
 	}
@@ -465,7 +425,6 @@ public class Utils_2 {
 			if (certainty >= cert)
 				result.add(i);
 		}
-
 		return result;
 	}
 
@@ -494,7 +453,6 @@ public class Utils_2 {
 			if (cot >= pair.away)
 				result.add(fe);
 		}
-
 		return result;
 	}
 
@@ -542,7 +500,6 @@ public class Utils_2 {
 			Position pos = createPosition(team, all);
 			table.positions.add(pos);
 		}
-
 		table.sort();
 		return table;
 	}
@@ -577,7 +534,6 @@ public class Utils_2 {
 				bestProfit = curr;
 				bestLow = i;
 			}
-
 		}
 
 		for (int i = bestLow; i < 23; i++) {
@@ -589,7 +545,6 @@ public class Utils_2 {
 				bestHigh = i;
 			}
 		}
-
 		return Pair.of(bestLow, bestHigh);
 	}
 
@@ -619,8 +574,6 @@ public class Utils_2 {
 				result.add(i);
 			else if (i.prediction <= i.lower && basicSimilar <= i.threshold)
 				result.add(i);
-			// else
-			// System.out.println(i + " " + i.prediction + " " + basicSimilar);
 		}
 
 		return result;

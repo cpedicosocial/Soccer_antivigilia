@@ -11,6 +11,9 @@ import main.Result;
  * @version 11 Changes done
  */
 public class FinalEntry implements Comparable<FinalEntry> {
+	
+	private final String LITERAL = "%.2f";
+	
     /**
      * This field sets the variable of class ExtendedFixture
      */
@@ -89,12 +92,12 @@ public class FinalEntry implements Comparable<FinalEntry> {
 		String out = prediction >= upper ? "over" : "under";
 		float coeff = prediction >= upper ? fixture.maxOver : fixture.maxUnder;
 		if (fixture.result.goalsHomeTeam == -1)
-			return String.format("%.2f", prediction * 100) + " " + fixture.date + " " + fixture.homeTeam + " : "
-					+ fixture.awayTeam + " " + out + " " + String.format("%.2f", coeff) + "\n";
+			return String.format(LITERAL, prediction * 100) + " " + fixture.date + " " + fixture.homeTeam + " : "
+					+ fixture.awayTeam + " " + out + " " + String.format(LITERAL, coeff) + "\n";
 		else
-			return String.format("%.2f", prediction * 100) + " " + fixture.date + " " + fixture.homeTeam + " : "
+			return String.format(LITERAL, prediction * 100) + " " + fixture.date + " " + fixture.homeTeam + " : "
 					+ fixture.awayTeam + " " + totalGoals + " " + out + " " + success() + " "
-					+ String.format("%.2f", getProfit()) + "\n";
+					+ String.format(LITERAL, getProfit()) + "\n";
 	}
 
 	public boolean isOver() {

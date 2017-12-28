@@ -44,27 +44,7 @@ public class ScraperControls_2 {
 	static Actions createAction(WebDriver driver) {
 		return new Actions(driver);
 	}
-
-	static void control2ForCollectUpToDate(Elements linksM, Elements fixtures,
-			Date yesterday, Set<ExtendedFixture> set ,ArrayList<ExtendedFixture> result) {
-		for (Element linkM : linksM) {
-			if (isScore(linkM.text())) {
-				fixtures.add(linkM);
-			}
-		}
-
-		for (int i = fixtures.size() - 1; i >= 0; i--) {
-			Document fixture = Jsoup.connect(BASE + fixtures.get(i).attr("href")).timeout(0).get();
-			ExtendedFixture ef = getFixture(fixture, competition);
-			if (ef != null && ef.date.before(yesterday)) {
-				breakFlag = true;
-				break;
-			}
-			result.add(ef);
-			set.add(ef);
-		}
-	}
-
+	
 	static void controlCollectUpToDate(WebDriver driver, Set<ExtendedFixture> set, Date yesterday,
 			ArrayList<ExtendedFixture> result, String competition) {
 		while (true) {
@@ -78,18 +58,6 @@ public class ScraperControls_2 {
 			Elements fixtures = createElements();
 
 			control2ForCollectUpToDate(linksM, fixtures, competition, yesterday, set, result);
-
-			/**
-			 * for (Element linkM : linksM) { if (isScore(linkM.text())) {
-			 * fixtures.add(linkM); } }
-			 * 
-			 * for (int i = fixtures.size() - 1; i >= 0; i--) { Document fixture
-			 * = Jsoup.connect(BASE +
-			 * fixtures.get(i).attr("href")).timeout(0).get(); ExtendedFixture
-			 * ef = getFixture(fixture, competition); if (ef != null &&
-			 * ef.date.before(yesterday)) { breakFlag = true; break; }
-			 * result.add(ef); set.add(ef); }
-			 */
 
 			if (breakFlag)
 				break;
@@ -121,30 +89,6 @@ public class ScraperControls_2 {
 		driver.navigate().to(address);
 
 		controlCollectUpToDate(driver, set, yesterday, result, competition);
-		/**
-		 * while (true) { int setSize = set.size(); String html =
-		 * driver.getPageSource(); Document matches = Jsoup.parse(html);
-		 * 
-		 * boolean breakFlag = false; Element list =
-		 * matches.select("table[class=matches ]").first(); Elements linksM =
-		 * list.select("a[href]"); Elements fixtures = createElements(); for
-		 * (Element linkM : linksM) { if (isScore(linkM.text())) {
-		 * fixtures.add(linkM); } }
-		 * 
-		 * for (int i = fixtures.size() - 1; i >= 0; i--) { Document fixture =
-		 * Jsoup.connect(BASE + fixtures.get(i).attr("href")).timeout(0).get();
-		 * ExtendedFixture ef = getFixture(fixture, competition); if (ef != null
-		 * && ef.date.before(yesterday)) { breakFlag = true; break; }
-		 * result.add(ef); set.add(ef); }
-		 * 
-		 * if (breakFlag) break;
-		 * 
-		 * Actions actions = createAction(driver);
-		 * actions.moveToElement(driver.findElement(By.className("previous"))).click().perform();
-		 * Thread.sleep(1000); String htmlAfter = driver.getPageSource();
-		 * 
-		 * if (html.equals(htmlAfter)) break;
-		 */
 
 		driver.close();
 
@@ -245,19 +189,6 @@ public class ScraperControls_2 {
 				ArrayList<String> links = createArrayListString();
 
 				control2ForOddsUpToDate(driver, list, competition, links, breakFlag, yesterday, result);
-				/**
-				 * for (WebElement i : list) { // better logic here?
-				 * Thread.sleep(100); if (i.getText().contains("-") &&
-				 * isFixtureLink(i.getAttribute("href")))
-				 * links.add(i.getAttribute("href"));
-				 * 
-				 * for (String i : links) { ExtendedFixture ef =
-				 * getOddsFixture(driver, i, competition, false,
-				 * OnlyTodayMatches.FALSE);
-				 * 
-				 * if (ef != null && ef.date.before(yesterday)) { breakFlag =
-				 * true; break; } result.add(ef); } }
-				 */
 			}
 		} catch (Exception e) {
 			System.out.println("Something was wrong");
@@ -459,6 +390,5 @@ public class ScraperControls_2 {
 		}
 	}
 	
-	
-	
+		
 }

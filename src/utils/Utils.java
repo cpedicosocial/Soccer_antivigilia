@@ -100,9 +100,12 @@ public class Utils {
 				String links_homeTeam = f.getJSONObject("_links").getJSONObject("homeTeam").getString("href");
 				String links_awayTeam = f.getJSONObject("_links").getJSONObject("awayTeam").getString("href");
 				String competition = f.getJSONObject("_links").getJSONObject("soccerseason").getString("href");
-	
+					
+				synchronized(format){
 				ExtendedFixture ef = new ExtendedFixture(format.parse(date), homeTeamName, awayTeamName,
 						new Result(goalsHomeTeam, goalsAwayTeam), competition).withMatchday(matchday);
+				}
+				
 				fixtures.add(ef);
 			}
 		} catch (Exception e) {
@@ -125,8 +128,10 @@ public class Utils {
 		String links_awayTeam = obj.getJSONObject("_links").getJSONObject("homeTeam").getString("href");
 		String competition = obj.getJSONObject("_links").getJSONObject("soccerseason").getString("href");
 
+		synchronized(format){
 		ExtendedFixture f = new ExtendedFixture(format.parse(date), homeTeamName, awayTeamName,
 				new Result(goalsHomeTeam, goalsAwayTeam), competition).withMatchday(matchday);
+		}
 		fixtures.add(f);
 		return fixtures;
 	}
@@ -171,21 +176,6 @@ public class Utils {
 		}
 		return away;
 	}
-
-	// public static ArrayList<Fixture> getForDate(ArrayList<Fixture> fixtures,
-	// int day) {
-	// ArrayList<Fixture> result = new ArrayList<>();
-	// DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-	// for (Fixture i : fixtures) {
-	// try {
-	// if (format.parse(i.date).getDay() == day)
-	// result.add(i);
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// return result;
-	// }
 
 	public static float countOverGamesPercent(ArrayList<ExtendedFixture> fixtures) {
 		int count = 0;
@@ -244,14 +234,12 @@ public class Utils {
 		if (offset >= 0) {
 			for (int i = offset + 1; i < 10; i++) {
 				for (int j = 0; j < i - offset; j++) {
-					// System.out.println(i + " : " + j);
 					totalHome += home[i] * away[j];
 				}
 			}
 		} else {
 			for (int i = 0; i < 10 + offset; i++) {
 				for (int j = 0; j < i - offset; j++) {
-					// System.out.println(i + " : " + j);
 					totalHome += home[i] * away[j];
 				}
 			}
@@ -272,15 +260,12 @@ public class Utils {
 		if (offset <= 0) {
 			for (int i = 0; i < 10 + offset; i++) {
 				totalHome += home[i] * away[i - offset];
-				// System.out.println(i + " : " + (i - offset));
 			}
 		} else {
 			for (int i = offset; i < 10; i++) {
 				totalHome += home[i] * away[i - offset];
-				// System.out.println(i + " : " + (i - offset));
 			}
 		}
-
 		return totalHome;
 	}
 
@@ -298,23 +283,16 @@ public class Utils {
 				totalHome += home[j] * away[i];
 			}
 		}
-
 		return totalHome;
 	}
 
 	public static Pair poissonAsianHome(float lambda, float mu, float line, float asianHome, float asianAway) {
 
-		// System.out.println(poissonAway(lambda, mu, 0) + poissonDraw(lambda,
-		// mu) + poissonHome(lambda, mu, 0));
-
 		float fraction = line % 1;
 		int whole = (int) (line - fraction);
 
 		if (Float.compare(fraction, 0f)==0) {
-			// System.out.println("wins");
 			float winChance = poissonHome(lambda, mu, -whole);
-
-			// System.out.println("draws");
 			float drawChance = poissonExact(lambda, mu, -whole);
 
 			float home = winChance * asianHome + drawChance - (1f - winChance - drawChance);
@@ -324,7 +302,6 @@ public class Utils {
 		} else if (Float.compare(fraction, -0.5f)==0) {
 			line = whole - 1;
 			whole = (int) (line - fraction);
-			// System.out.println("wins");
 			float winChance = poissonHome(lambda, mu, -whole);
 
 			float home = winChance * asianHome - (1f - winChance);
@@ -335,8 +312,7 @@ public class Utils {
 			line = (float) Math.ceil(line);
 			fraction = line % 1;
 			whole = (int) (line - fraction);
-
-			// System.out.println("wins");
+			
 			float winChance = poissonHome(lambda, mu, -whole);
 
 			float home = winChance * asianHome - (1f - winChance);
@@ -346,9 +322,7 @@ public class Utils {
 		} else if (Float.compare(fraction, -0.25f)==0) {
 			line = whole - 1;
 			whole = (int) (line - fraction);
-			// System.out.println("wins");
 			float winChance = poissonHome(lambda, mu, -whole);
-			// System.out.println("half loses");
 			float drawChance = poissonExact(lambda, mu, -whole);
 
 			float home = winChance * asianHome - drawChance / 2 - (1f - winChance - drawChance);
@@ -360,9 +334,7 @@ public class Utils {
 			fraction = line % 1;
 			whole = (int) (line - fraction);
 
-			// System.out.println("wins");
 			float winChance = poissonHome(lambda, mu, -whole);
-			// System.out.println("half wins");
 			float drawChance = poissonExact(lambda, mu, -whole);
 
 			float home = winChance * asianHome + drawChance * (1 + (asianHome - 1) / 2) - (1f - winChance - drawChance);
@@ -373,9 +345,7 @@ public class Utils {
 			line = whole - 1;
 			fraction = line % 1;
 			whole = (int) (line - fraction);
-			// System.out.println("wins");
 			float winChance = poissonHome(lambda, mu, -whole);
-			// System.out.println("half wins");
 			float drawChance = poissonExact(lambda, mu, -whole);
 
 			float home = winChance * asianHome + drawChance * (1 + (asianHome - 1) / 2) - (1f - winChance - drawChance);
@@ -386,9 +356,7 @@ public class Utils {
 			line = (float) Math.ceil(line);
 			fraction = line % 1;
 			whole = (int) (line - fraction);
-			// System.out.println("wins");
 			float winChance = poissonHome(lambda, mu, -whole);
-			// System.out.println("half loss");
 			float drawChance = poissonExact(lambda, mu, -whole);
 
 			float home = winChance * asianHome - drawChance / 2 - (1f - winChance - drawChance);
@@ -559,16 +527,6 @@ public class Utils {
 
 		return fixtures.size() == 0 ? 0 : ((float) count / fixtures.size());
 	}
-
-	// public static ArrayList<ExtendedFixture>
-	// filterByOdds(ArrayList<ExtendedFixture> data, float min, float max) {
-	// ArrayList<ExtendedFixture> filtered = new ArrayList<>();
-	// for (ExtendedFixture i : data) {
-	// if (i.maxOver <= max && i.maxOver >= min)
-	// filtered.add(i);
-	// }
-	// return filtered;
-	// }
 
 	public static float countOversWhenDraw(ArrayList<ExtendedFixture> all) {
 		int count = 0;

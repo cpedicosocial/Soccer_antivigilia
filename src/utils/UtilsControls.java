@@ -28,9 +28,12 @@ class UtilsControls{
 				Thread.sleep(time < 0 ? 61 : time);
 				count = 50;
 				start = System.currentTimeMillis();
-			} catch (InterruptedException e1) {
+			}catch (InterruptedException e1) {
 				System.out.println("Something was wrong");
 				//e1.printStackTrace();
+			}catch(SSLException ssle) {
+			    logSecurityIssue(ssle); //
+			    terminateInsecureConnection();
 			}
 		URL url = new URL(address);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();

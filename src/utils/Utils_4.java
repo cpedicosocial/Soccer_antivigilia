@@ -32,8 +32,6 @@ public class Utils_4 {
 	 */
 	public static boolean matchesFixtureLists(String teamFor, ArrayList<ExtendedFixture> fixtures,
 			ArrayList<ExtendedFixture> fwa) {
-//		System.out.println(fixtures);
-		// System.out.println(fwa);
 		for (ExtendedFixture i : fixtures) {
 			boolean foundMatch = false;
 			boolean isHomeSide = teamFor.equals(i.homeTeam);
@@ -56,7 +54,6 @@ public class Utils_4 {
 		ArrayList<FinalEntry> fulls = new ArrayList<>();
 
 		for (FinalEntry f : finals) {
-			// boolean isOver = f.prediction > f.threshold;
 			FullEntry full = new FullEntry(f.fixture, f.prediction, f.result, f.threshold, f.lower, f.upper, null);
 			for (Line l : map.get(f.fixture).goalLines.getArrayLines()) {
 				if (Float.compare(l.line, line)==0) {
@@ -238,10 +235,7 @@ public class Utils_4 {
 		for (FinalEntry c : finals) {
 			if ((table.getMiddleTeams().contains((c.fixture.homeTeam))
 					&& table.getMiddleTeams().contains((c.fixture.awayTeam)))
-			/*
-			 * || (table.getBottomTeams().contains((c.fixture.homeTeam)) &&
-			 * table.getTopTeams().contains((c.fixture.awayTeam)))
-			 */)
+			)
 				result.add(c);
 		}
 		return result;
@@ -294,16 +288,12 @@ public class Utils_4 {
 		float expected = homeEstimate * lambda + awayEstimate * mu;
 
 		float dist = avgShotsOver - avgShotsUnder;
-		// System.out.println(dist);
 
 		float returned=0f;
 		returned=UtilsControls.controlAvg(avgShotsUnder,avgShotsOver);
 		returned=UtilsControls.controlExpectedGreater(expected,avgShotsUnder,avgShotsOver,dist);
 		returned=UtilsControls.controlExpectedSmaller(expected,avgShotsUnder,avgShotsOver,dist);
 		return returned;
-		// System.out.println(homeEstimate + " : " + awayEstimate);
-		// return /* Utils.poissonOver(homeEstimate, awayEstimate)
-		// */totalEstimate / 2;
 
 	}
 
@@ -441,21 +431,7 @@ public class Utils_4 {
 					if (league.getValue().containsKey(j))
 						data.addAll(league.getValue().get(j));
 
-				// analysys(data, -1, false);
 				result.addAll(filterByPastResults(current, data, optimalOneIn));
-
-				// Settings initial = new Settings("", 0f, 0f, 0f, 0.55f, 0.55f,
-				// 0.55f, 0.5f, 0f).withShots(1f);
-				// initial = XlSUtils.findThreshold(data, initial, maxBy);
-				// ArrayList<FinalEntry> toAdd = XlSUtils.restrict(current,
-				// initial);
-
-				// if (maxBy.equals(MaximizingBy.UNDERS))
-				// toAdd = onlyUnders(toAdd);
-				// else if (maxBy.equals(MaximizingBy.OVERS))
-				// toAdd = onlyOvers(toAdd);
-
-				// withTH.addAll(toAdd);
 
 			}
 		}
@@ -643,9 +619,6 @@ public class Utils_4 {
 
 		for (HTEntry hte : all) {
 			hte.fe.prediction = bestx * hte.zero + besty * hte.one;
-			// hte.fe.threshold = bestTH;
-			// hte.fe.lower = bestTH;
-			// hte.fe.upper = bestTH;
 		}
 
 		all=UtilsControls.controlNewMaxByEquals(newMaxBy,all);

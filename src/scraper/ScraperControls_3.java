@@ -276,8 +276,6 @@ public class ScraperControls_3 {
 
 			if (bookmaker.equals("Pinnacle"))
 				pinnOdds = modds;
-
-			// System.out.println(modds);
 		}
 
 		checkValueOverPinnacleOdds(matchOdds, pinnOdds);
@@ -406,7 +404,6 @@ public class ScraperControls_3 {
 			List<WebElement> rowsGoals = goalLineTable.findElements(By.xpath("//tbody/tr"));
 			float line = -1f, over = -1f, under = -1f;
 	
-			// System.out.println(rowsGoals.size());
 			controlRowsGoals(rowsGoals, line, over, under);
 	
 			controlOver(over, goalLines,line, over, under, twoAndHalf, currentDiv, actions);

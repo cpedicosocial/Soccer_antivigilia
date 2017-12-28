@@ -108,19 +108,6 @@ public class Predictions {
 		}
 	}
 	
-	private static void controlAllUnders(ArrayList<FinalEntry> equilibriumsPending, boolean allOvers, boolean allUnders, ArrayList<FinalEntry> result)
-	{
-		if (allUnders) {
-			System.out.println(equilibriumsPending);
-			result.addAll(equilibriumsPending);
-		} else if (allOvers) {
-			equilibriumsPending = XlSUtils.restrict(equilibriumsPending,
-					Settings.shots(i.getKey()).withTHandBounds(0.45f));
-			System.out.println(equilibriumsPending);
-			result.addAll(equilibriumsPending);
-		}
-	}
-	
 	private static void controlOnlyToday(OnlyTodayMatches onlyToday, ArrayList<FinalEntry> pending, int month, int year)
 	{
 		if (onlyToday.equals(OnlyTodayMatches.TRUE)) {
