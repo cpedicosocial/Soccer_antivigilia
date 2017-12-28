@@ -1,21 +1,17 @@
 package predictions;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -27,12 +23,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
-
-import main.Test.DataType;
-import predictions.Predictions.OnlyTodayMatches;
-import scraper.Scraper;
 
 /**
  * PJDCC - Summary for class responsabilities.
@@ -143,56 +134,7 @@ public class DualListBox extends JPanel {
 		model.addAll(newValues);
 	}
 
-	public Iterator sourceIterator() {
-		return sourceListModel.iterator();
-	}
 
-	public Iterator destinationIterator() {
-		return destListModel.iterator();
-	}
-
-	public void setSourceCellRenderer(ListCellRenderer newValue) {
-		sourceList.setCellRenderer(newValue);
-	}
-
-	public ListCellRenderer getSourceCellRenderer() {
-		return sourceList.getCellRenderer();
-	}
-
-	public void setDestinationCellRenderer(ListCellRenderer newValue) {
-		destList.setCellRenderer(newValue);
-	}
-
-	public ListCellRenderer getDestinationCellRenderer() {
-		return destList.getCellRenderer();
-	}
-
-	public void setVisibleRowCount(int newValue) {
-		sourceList.setVisibleRowCount(newValue);
-		destList.setVisibleRowCount(newValue);
-	}
-
-	public int getVisibleRowCount() {
-		return sourceList.getVisibleRowCount();
-	}
-
-	public void setSelectionBackground(Color newValue) {
-		sourceList.setSelectionBackground(newValue);
-		destList.setSelectionBackground(newValue);
-	}
-
-	public Color getSelectionBackground() {
-		return sourceList.getSelectionBackground();
-	}
-
-	public void setSelectionForeground(Color newValue) {
-		sourceList.setSelectionForeground(newValue);
-		destList.setSelectionForeground(newValue);
-	}
-
-	public Color getSelectionForeground() {
-		return sourceList.getSelectionForeground();
-	}
 
 	private void clearSourceSelected() {
 		Object selected[] = sourceList.getSelectedValues();

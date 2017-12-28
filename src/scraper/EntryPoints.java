@@ -1,10 +1,7 @@
 package scraper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import org.omg.CORBA.Current;
 
 /**
  * PJDCC - Summary for class responsabilities.

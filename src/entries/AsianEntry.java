@@ -2,7 +2,6 @@ package entries;
 
 import main.ExtendedFixture;
 import results.Results;
-import utils.Utils;
 
 /**
  * PJDCC - Summary for class responsabilities.

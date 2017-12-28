@@ -3,7 +3,6 @@ package scraper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -1888,4 +1887,15 @@ public class Scraper {
 		}
 		return true;
 	}
+	
+	static void controlWhileCollectFull(int fixtureCount, ArrayList<PlayerFixture> result) {
+		while (true) {
+			Document fixture = Jsoup.connect(BASE + linkM.attr("href")).timeout(30 * 1000).get();
+			ArrayList<PlayerFixture> ef = getFixtureFull(fixture, competition);
+			fixtureCount++;
+			result.addAll(ef);
+			break;
+			}
+	}
+	
 }
